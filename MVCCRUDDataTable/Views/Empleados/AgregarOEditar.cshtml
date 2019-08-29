@@ -1,0 +1,40 @@
+﻿@model MVCCRUDDataTable.Models.TblEmpleados
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("AgregarOEditar", "Empleados", FormMethod.Post, new { onsubmit = "return SubmitForm(this);" }))
+{
+    @Html.HiddenFor(Model => Model.IdEmpleado)
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.Nombres, new { @class = "control-label" })
+        @Html.EditorFor(Model => Model.Nombres, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Nombres, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.Apellidos, new { @class = "control-label" })
+        @Html.EditorFor(Model => Model.Apellidos, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Apellidos, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.Edad, new { @class = "control-label" })
+        @Html.EditorFor(Model => Model.Edad, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Edad, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.Oficio, new { @class = "control-label" })
+        @Html.EditorFor(Model => Model.Oficio, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Oficio, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.Salario, new { @class = "control-label" })
+        @Html.EditorFor(Model => Model.Salario, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Salario, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar</button>
+        <button type="reset" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;Refrescar</button>        
+    </div>
+
+}

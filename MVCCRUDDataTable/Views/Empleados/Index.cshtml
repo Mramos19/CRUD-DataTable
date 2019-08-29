@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Empleados";
+}
+
+@section Head{
+    <link href="/Content/DataTables/datatables.min.css" rel="stylesheet" />
+    <link href="/Content/DataTables/DataTables-1.10.18/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/font-awesome.min.css" rel="stylesheet" />
+}
+
+<h2>Lista Empleados</h2>
+
+<a class="btn btn-sm btn-success" onclick="PopupForm('@Url.Action("AgregarOEditar","Empleados")');"><i class="glyphicon glyphicon-plus"></i>&nbsp;Nuevo</a>
+<br />
+<br />
+<table id="tblEmpleados" class="table table-bordered table-condensed" width="100%">
+    <thead>
+        <tr>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Edad</th>
+            <th>Oficio</th>
+            <th>Salario</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+</table>
+
+
+@section Script{
+    <script src="/Content/DataTables/datatables.min.js"></script>
+    <script src="/Content/DataTables/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+
+        var _Popup, _DataTable;
+
+        $(function () {
+
+            _DataTable = $('#tblEmpleados').DataTable({
+                ajax: {
+                    url: '/Empleados/Mostrar',
+                    type: 'GET',
+                    data: '{}',
+                    dataType: 'JSON',
+                    contentType: 'application/JSON; charset=UTF-8'
+                },
+                columns: [
+                    { data: 'Nombres' },
+                    { data: 'Apellidos' },
+                    { data: 'Edad' },
+                    { data: 'Oficio' },
+                    { data: 'Salario' },
+                    {
+                        data: 'IdEmpleado', render: function (data) {
+                            return "<a class='btn btn-sm btn-default' onclick=PopupForm('@Url.Action("AgregarOEditar","Empleados")/" + data + "')><i class='fa fa-pencil'></i> Editar</a>&nbsp;" +
+                                   "<a class='btn btn-sm btn-danger' onclick=Remove('@Url.Action("Eliminar","Empleados")/"+data+"')><i class='fa fa-remove'></i> Eliminar</a>"
+                        },
+                        orderable: false,
+                        width: "150px"
+                    }
+                ],
+                language: {
+                    url: '/Content/DataTables/Languaje/Spanish.json'
+                }
+            });
+        });
+
+        function PopupForm(url) {
+
+            //debugger;
+
+            var formTemp = $('<div/>');
+
+            $.get(url).done(function (response) {
+
+                formTemp.html(response);
+                _Popup = formTemp.dialog({
+                    autoOpen: true,
+                    resizable: false,
+                    height: 500,
+                    width: "60%",
+                    title: 'Empleados',
+                    close: function () {
+                        _Popup.dialog('destroy').remove();
+                    }
+                });
+
+            });
+
+        }
+
+        function SubmitForm(form) {
+
+            //debugger;
+
+            $.validator.unobtrusive.parse(form);
+
+            if ($(form).valid()) {
+                $.ajax({
+                    url: form.action,
+                    type: 'POST',
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            _Popup.dialog('close');
+                            _DataTable.ajax.reload();
+                        }
+                    }
+                });
+            }
+
+            return false;
+        }
+
+    function Remove(_Url) {
+
+        if (confirm("¿Está seguro que dese eliminar el registro?")) {
+
+            $.ajax({
+                url: _Url,
+                type: 'POST',
+                success: function (data) {
+                    if (data.success) {
+                        _DataTable.ajax.reload();
+                    }
+                }
+            });
+
+        }
+
+    }
+
+    </script>
+}
